@@ -1,0 +1,15 @@
+version: '2'
+
+volumes:
+  magento_data:
+    driver: local
+
+services:
+  magento:
+    image: 'optimum/crm:magento-2.3.0-l'
+    build: ./apache
+    ports:
+      - '80:80'
+    volumes:
+      - 'magento_data:/data'
+

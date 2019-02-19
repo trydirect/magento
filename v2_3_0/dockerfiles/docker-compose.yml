@@ -1,0 +1,52 @@
+version: '2'
+
+volumes:
+  mariadb_data:
+    driver: local
+  magento_data:
+    driver: local
+
+services:
+  magento:
+    image: ${REGISTRY}optimum/crm:magento-2.3.0-l
+    container_name: magento
+    env_file:
+      .env
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    volumes:
+      - ./magento:/home/magento2
+      - /var/www
+      - magento_data:/data
+      - ./cron:/var/spool/cron/crontabs
+    depends_on:
+      - mariadb
+    working_dir:  /var/www/magento2
+
+  mariadb:
+    image: "mariadb:latest"
+    container_name: magento_mariadb
+    env_file:
+      .env
+    volumes:
+      - "mariadb_data:/var/lib/mysql"
+
+  nginx:
+    image: ${REGISTRY}nginx-le:stable
+    container_name: nginx
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs/ssl:/etc/ssl/nginx
+      - ./certs/letsencrypt:/etc/letsencrypt
+      - ./cron/nginx:/var/spool/cron/crontabs
+      - ./nginx/conf.d:/etc/nginx/conf.d/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./null:/etc/nginx/sites-enabled
+      - ./supervisord/nginx.conf:/etc/supervisor/conf.d/nginx.conf
+    links:
+      - magento
+    entrypoint: /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
