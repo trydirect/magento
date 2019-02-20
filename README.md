@@ -1,41 +1,103 @@
+# Magento Docker build files
 
-MAGENTO with sample data will be created as a separate stack because of complexity
-
-
-login with app user
-create auth.json
-Public Key: bbf2a594dc3d5d1f57276138e9c7c457
-Private Key: c39a165334582213e73f2477d4f6808e
-
-{agento2@f4553b3dad59:/var/www/magento2$ cat /home/magento2/.composer/auth.json
-  "http-basic": {
-     "repo.magento.com": {
-        "username": "bbf2a594dc3d5d1f57276138e9c7c457",
-        "password": "c39a165334582213e73f2477d4f6808e"
-     }
-  }
-
-cd /var/www
-composer create-project https://repo.magento.com/ magento/project-community-edition magento2
-
-php bin/magento setup:install --base-url=http://dinelo.com --db-host=mariadb --db-name=magento2 --db-user=magento2 --db-password=6nMfTrhM --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin2018 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --backend-frontname=admindashboard
-
-bin/magento sampledata:deploy
-bin/magento setup:upgrade
+This repo contains Magento docker build files for different versions of Magento
 
 
+### Installing
+
+```
+1. Clone repository
+2. cd magento/<version>/dockerfiles 
+3. docker-compose up -d 
+```
+
+## Built With
+
+* [PHP](http://www.php.net) - PHP 
+* [Nginx](https://nginx.org/) - Web server
+* [MySQL](https://www.mysql.com/ - Database engine
+
+## Getting Started
+
+Example docker-compose.yml file:
+
+```
+version: '2'
+
+volumes:
+  mariadb_data:
+    driver: local
+  magento_data:
+    driver: local
+
+services:
+  magento:
+    image: ${REGISTRY}trydirect:magento:2.3.0
+    container_name: magento
+    env_file:
+      .env
+    volumes:
+      - ./magento:/home/magento2   
+      - /var/www
+      - magento_data:/data
+      - ./cron:/var/spool/cron/crontabs
+    depends_on:
+      - mariadb
+    working_dir:  /var/www/magento2
+
+  mariadb:
+    image: "mariadb:latest"
+    container_name: magento_mariadb
+    env_file:
+      .env
+    volumes:
+      - "mariadb_data:/var/lib/mysql"
+
+  nginx:
+    image: ${REGISTRY}nginx-le:stable
+    container_name: nginx
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs/ssl:/etc/ssl/nginx
+      - ./certs/letsencrypt:/etc/letsencrypt
+      - ./cron/nginx:/var/spool/cron/crontabs
+      - ./nginx/conf.d:/etc/nginx/conf.d/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./null:/etc/nginx/sites-enabled
+      - ./supervisord/nginx.conf:/etc/supervisor/conf.d/nginx.conf
+    links:
+      - magento
+    entrypoint: /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+
+```
 
 
-The file "/var/www/magento2/generated/code/Dotdigitalgroup/Email/Model/Connector/AccountFactory.php" cannot be deleted Warning!unlink(/var/www/magento2/generated/code/Dotdigitalgroup/Email/Model/Connector/AccountFactory.php): Permission denied
+## Contributing
+
+Join https://gitter.im/try-direct/community for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+See the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 
-SetEnvIf X-Forwarded-Proto https HTTPS=on
-magento ssl loop
+## How to mount magento from host machine
 
-this piece of code should be added to index.php
+Add 
+``` 
+volumes:
+      - ./magento:/var/www/magento2
+```
+to magento service in case you have magento source code on your host machine and want to sync directories with container.
 
-if ($http_x_forwarded_proto = "https") {
-   set $my_http "https";
-   set $my_ssl "on";
-   set $my_port "443";
- }
