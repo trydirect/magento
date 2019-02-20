@@ -8,6 +8,10 @@ This repo contains Magento docker build files for different versions of Magento
 ```
 1. Clone repository
 2. cd magento/<version>/dockerfiles 
+
+Find .env file and replace all vars wrapped with {{var}} .  Example: DB_USER: {{DB_USER}} to  DB_USER:magento
+
+
 3. docker-compose up -d 
 ```
 
