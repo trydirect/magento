@@ -15,7 +15,7 @@ This repo contains Magento docker build files for different versions of Magento
 
 * [PHP](http://www.php.net) - PHP 
 * [Nginx](https://nginx.org/) - Web server
-* [MySQL](https://www.mysql.com/ - Database engine
+* [MySQL](https://www.mysql.com/) - Database engine
 
 ## Getting Started
 
@@ -81,11 +81,11 @@ Join https://gitter.im/try-direct/community for details on our code of conduct, 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning.
 
 ## Authors
 
-See the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See the list of [contributors](https://github.com/trydirect/magento/contributors) who participated in this project.
 
 ## License
 
