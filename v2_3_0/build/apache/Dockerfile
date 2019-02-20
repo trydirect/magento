@@ -50,18 +50,18 @@ RUN  npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && sed -i 's/www-data/magento2/g' /etc/apache2/envvars
 
 # PHP config
-ADD config/php.ini /usr/local/etc/php
+COPY config/php.ini /usr/local/etc/php
 
 # supervisord config
-ADD config/supervisord.conf /etc/supervisord.conf
+COPY config/supervisord.conf /etc/supervisord.conf
 
 # php-fpm config
-ADD config/php-fpm-magento2.conf /usr/local/etc/php-fpm.d/php-fpm-magento2.conf
+COPY config/php-fpm-magento2.conf /usr/local/etc/php-fpm.d/php-fpm-magento2.conf
 
 # apache config
-ADD config/apache-default.conf /etc/apache2/sites-enabled/apache-default.conf
+COPY config/apache-default.conf /etc/apache2/sites-enabled/apache-default.conf
 
-ADD config/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 
 ENV PATH $PATH:/home/magento2/scripts/:/home/magento2/.magento-cloud/bin
