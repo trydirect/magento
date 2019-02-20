@@ -71,9 +71,10 @@ ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
 
-
-ADD src/2.2.4.tar.gz /usr/local/src
-RUN mv /usr/local/src/magento2-2.2.4/* /var/www/magento2
+RUN wget -P /var/www https://github.com/magento/magento2/archive/2.2.4.tar.gz
+RUN tar xzvf /var/www/2.2.4.tar.gz -C /var/www/ \
+    && mv /var/www/magento2-2.3.4/* /var/www/magento2 \
+    && ls -la /var/www/magento2
 
 RUN cd /var/www/magento2 && composer install
 # Initial scripts
