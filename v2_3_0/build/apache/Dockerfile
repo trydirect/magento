@@ -89,6 +89,6 @@ RUN chown -R magento2:magento2 /home/magento2 && \
 EXPOSE 80
 WORKDIR /home/magento2
 
-USER root
+USER magento2
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
