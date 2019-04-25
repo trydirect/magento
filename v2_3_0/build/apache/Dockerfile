@@ -86,6 +86,14 @@ RUN chown -R magento2:magento2 /home/magento2 && \
     chown -R magento2:magento2 /var/www/magento2 && \
     chmod 755 /home/magento2/scripts/bin/magento-cloud-login
 
+#Change access righs to conf, logs, bin from root to www-data
+#setcap to bind to privileged ports as non-root
+RUN chown -hR magento2:magento2 /etc/apache2 && \
+    chown -R www-data: /var/{log,run}/apache2/ && \
+    setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 && \
+    getcap /usr/sbin/apache2 && \
+    chown -hR magento2:magento2 /usr/local/var
+
 EXPOSE 80
 WORKDIR /home/magento2
 
