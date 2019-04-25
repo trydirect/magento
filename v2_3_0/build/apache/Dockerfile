@@ -90,7 +90,7 @@ RUN chown -R magento2:magento2 /home/magento2 && \
 #setcap to bind to privileged ports as non-root
 RUN chown -hR magento2:magento2 /etc/apache2 && \
     chown -R magento2. /var/log/apache2/ && \
-    chown -R magento2. /var/run/apache2/ && \
+    chown -R magento2. /var/run && \
     setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 && \
     getcap /usr/sbin/apache2 && \
     chown -hR magento2:magento2 /usr/local/var
