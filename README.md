@@ -1,3 +1,9 @@
+
+![Docker Stars](https://img.shields.io/docker/stars/trydirect/magento.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/trydirect/magento.svg)
+![Docker Automated](https://img.shields.io/docker/cloud/automated/trydirect/magento.svg)
+![Docker Build](https://img.shields.io/docker/cloud/build/trydirect/magento.svg)
+
 # Magento Docker build files
 
 This repo contains Magento docker build files for different versions of Magento
