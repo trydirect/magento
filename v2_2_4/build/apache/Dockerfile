@@ -38,8 +38,8 @@ RUN  npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && a2enmod proxy_fcgi \
     && a2enmod ssl \
     && rm -f /etc/apache2/sites-enabled/000-default.conf \
-    && groupadd -r -g 20001 magento2 \
-    && useradd -u 20001 -g 20001  -m -d /home/magento2 -s /bin/bash magento2 && adduser magento2 sudo \
+    && groupadd -r -g 2000 magento2 \
+    && useradd -u 2000 -g 2000  -m -d /home/magento2 -s /bin/bash magento2 && adduser magento2 sudo \
     && echo "magento2 ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     && touch /etc/sudoers.d/privacy \
     && echo "Defaults        lecture = never" >> /etc/sudoers.d/privacy \
