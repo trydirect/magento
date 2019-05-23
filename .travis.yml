@@ -1,0 +1,39 @@
+language: python
+python:
+  - 2.7
+
+services:
+  - docker
+
+before_install:
+  # update is required to update the repositories to see the new packages for
+  # Docker.
+  - sudo apt-get update
+  - docker-compose --version
+  - pip install docker-compose --upgrade
+  - docker-compose --version
+
+install:
+  - cd v2_3_0
+  - docker-compose build
+  - docker-compose up -d
+  - docker-compose ps
+
+before_script:
+  - pip install requests
+  - pip install docker
+  - cd $TRAVIS_BUILD_DIR
+
+script:
+  - python tests.py
+
+notifications:
+  slack:
+    rooms:
+      - optimum-team:GycletOWK4Kt95GktwYwfUMp#build
+
+after_success:
+  - cd 5.7
+  - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+  - docker-compose -f docker-compose-build.yml images
+  - docker push trydirect/magento:2.3.0

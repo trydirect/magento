@@ -8,21 +8,17 @@ volumes:
 
 services:
   magento:
-    image: ${REGISTRY}optimum/crm:magento-2.3.0-l
+    image: trydirect/magento:2.3.0
+    build: dockerfiles/build/apache
     container_name: magento
     env_file:
       .env
-    # ports:
-    #   - "80:80"
-    #   - "443:443"
     volumes:
-      - ./magento:/home/magento2
       - /var/www
       - magento_data:/data
-      - ./cron:/var/spool/cron/crontabs
     depends_on:
       - mariadb
-    working_dir:  /var/www/magento2
+    working_dir: /var/www/magento2
 
   mariadb:
     image: "mariadb:latest"
@@ -33,20 +29,19 @@ services:
       - "mariadb_data:/var/lib/mysql"
 
   nginx:
-    image: ${REGISTRY}nginx-le:stable
+    image: trydirect/nginx
     container_name: nginx
     env_file: .env
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./certs/ssl:/etc/ssl/nginx
-      - ./certs/letsencrypt:/etc/letsencrypt
-      - ./cron/nginx:/var/spool/cron/crontabs
-      - ./nginx/conf.d:/etc/nginx/conf.d/
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./null:/etc/nginx/sites-enabled
-      - ./supervisord/nginx.conf:/etc/supervisor/conf.d/nginx.conf
+      - ./configs/certs/ssl:/etc/ssl/nginx
+      - ./configs/certs/letsencrypt:/etc/letsencrypt
+      - ./configs/cron/nginx:/var/spool/cron/crontabs
+      - ./configs/nginx/conf.d:/etc/nginx/conf.d/
+      - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./configs/supervisord/nginx.conf:/etc/supervisor/conf.d/nginx.conf
     links:
       - magento
     entrypoint: /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n

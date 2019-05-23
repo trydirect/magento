@@ -7,7 +7,6 @@ ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-g
 RUN apt-get update && apt-get install -y \
     apt-utils \
     sudo \
-    wget \
     unzip \
     cron \
     curl \
@@ -60,9 +59,7 @@ COPY config/php-fpm-magento2.conf /usr/local/etc/php-fpm.d/php-fpm-magento2.conf
 
 # apache config
 COPY config/apache-default.conf /etc/apache2/sites-enabled/apache-default.conf
-
 COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
-
 
 ENV PATH $PATH:/home/magento2/scripts/:/home/magento2/.magento-cloud/bin
 ENV PATH $PATH:/var/www/magento2/bin
@@ -72,14 +69,14 @@ ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
 
-RUN wget -P /var/www https://github.com/magento/magento2/archive/2.3.0.tar.gz
+RUN curl -LO /var/www https://github.com/magento/magento2/archive/2.3.0.tar.gz
 RUN tar xzvf /var/www/2.3.0.tar.gz -C /var/www/ \
     && mv /var/www/magento2-2.3.0/* /var/www/magento2 \
     && ls -la /var/www/magento2
 
 RUN cd /var/www/magento2 && composer install
 # Initial scripts
-COPY scripts/ /home/magento2/scripts/
+COPY scripts /home/magento2/scripts/
 RUN cd /home/magento2/scripts && composer install && chmod +x /home/magento2/scripts/m2init
 
 RUN chown -R magento2:magento2 /home/magento2 && \
@@ -98,7 +95,6 @@ RUN chown -hR magento2:magento2 /etc/apache2 && \
 
 EXPOSE 80
 WORKDIR /home/magento2
-
 USER magento2
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
