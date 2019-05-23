@@ -69,7 +69,7 @@ ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
 
-RUN curl -LO /var/www https://github.com/magento/magento2/archive/2.3.0.tar.gz
+RUN curl -LO https://github.com/magento/magento2/archive/2.3.0.tar.gz
 RUN tar xzvf /var/www/2.3.0.tar.gz -C /var/www/ \
     && mv /var/www/magento2-2.3.0/* /var/www/magento2 \
     && ls -la /var/www/magento2
