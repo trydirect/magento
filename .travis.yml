@@ -10,7 +10,7 @@ before_install:
   # Docker.
   - sudo apt-get update
   - docker-compose --version
-  - pip install docker-compose --upgrade
+  - pip install  --progress-bar off docker-compose --upgrade
   - docker-compose --version
 
 install:
@@ -20,8 +20,8 @@ install:
   - docker-compose ps
 
 before_script:
-  - pip install requests
-  - pip install docker
+  - pip install requests --progress-bar off
+  - pip install docker  --progress-bar off
   - cd $TRAVIS_BUILD_DIR
 
 script:
@@ -33,7 +33,7 @@ notifications:
       - optimum-team:GycletOWK4Kt95GktwYwfUMp#build
 
 after_success:
-  - cd 5.7
+  - cd v2_3_0
   - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
   - docker-compose -f docker-compose-build.yml images
   - docker push trydirect/magento:2.3.0

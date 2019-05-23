@@ -4,7 +4,7 @@ MAINTAINER "Magento"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y -qq \
     apt-utils \
     sudo \
     unzip \
@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean && apt-get update && apt-get install -y curl gnupg2 software-properties-common \
     && curl -sL https://deb.nodesource.com/setup_11.x | sudo bash - \
-    && apt-get update && apt-get install -y nodejs
+    && apt-get update && apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN  npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
+RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
     && apt-get install -y apache2 \
     && a2enmod rewrite \
@@ -48,22 +48,14 @@ RUN  npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && rm -r /usr/local/etc/php-fpm.d/* \
     && sed -i 's/www-data/magento2/g' /etc/apache2/envvars
 
-# PHP config
 COPY config/php.ini /usr/local/etc/php
-
-# supervisord config
 COPY config/supervisord.conf /etc/supervisord.conf
-
-# php-fpm config
 COPY config/php-fpm-magento2.conf /usr/local/etc/php-fpm.d/php-fpm-magento2.conf
-
-# apache config
 COPY config/apache-default.conf /etc/apache2/sites-enabled/apache-default.conf
 COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENV PATH $PATH:/home/magento2/scripts/:/home/magento2/.magento-cloud/bin
 ENV PATH $PATH:/var/www/magento2/bin
-
 ENV USE_SHARED_WEBROOT 1
 ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
