@@ -69,12 +69,15 @@ ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
 
+WORKDIR /var/www
 RUN curl -LO https://github.com/magento/magento2/archive/2.3.0.tar.gz
 RUN tar xzvf /var/www/2.3.0.tar.gz -C /var/www/ \
     && mv /var/www/magento2-2.3.0/* /var/www/magento2 \
     && ls -la /var/www/magento2
 
-RUN cd /var/www/magento2 && composer install
+WORKDIR /var/www/magento2
+RUN composer install
+
 # Initial scripts
 COPY scripts /home/magento2/scripts/
 RUN cd /home/magento2/scripts && composer install && chmod +x /home/magento2/scripts/m2init
