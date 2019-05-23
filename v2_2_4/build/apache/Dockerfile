@@ -96,6 +96,10 @@ RUN chown -hR magento2:magento2 /etc/apache2 && \
     getcap /usr/sbin/apache2 && \
     chown -hR magento2:magento2 /usr/local/var
 
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 EXPOSE 80
 WORKDIR /home/magento2
 
