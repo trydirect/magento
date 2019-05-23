@@ -43,8 +43,7 @@ print(apache.logs())
 php = client.containers.get('magento')
 php_log = php.logs()
 assert php.status == 'running'
-assert 'Complete! Mautic has been successfully copied to /var/www/html' in php_log.decode()
-assert 'This server is now configured to run Mautic!' in php_log.decode()
+print(php_log.decode())
 apache_proc = php.exec_run("sh -c 'ps aux|grep apache2'")
 print(apache_proc.output.decode())
 assert 'apache2 -DFOREGROUND' in apache_proc.output.decode()
@@ -55,7 +54,7 @@ assert '*:80' in ss.output.decode()
 # check redirect to web installer
 curl = php.exec_run("curl -i http://localhost")
 assert 'Location: http://localhost/index.php/installer' in curl.output.decode()
-# @todo run mautic unit test, first copy .env.dist to .env
+# @todo run magento unit test, first copy .env.dist to .env
 #php_conf = php.exec_run("bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist")
 
 db = client.containers.get('magento_mariadb')
