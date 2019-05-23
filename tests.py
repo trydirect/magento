@@ -52,14 +52,13 @@ db = client.containers.get('magento_mariadb')
 assert db.status == 'running'
 cnf = db.exec_run("/usr/sbin/mysqld --verbose  --help")
 print(cnf.output.decode())
-# assert 'mysqld  Ver 5.7' in cnf.output.decode()
+assert 'mysqld  Ver 10.3.15-MariaDB' in cnf.output.decode()
 db_log = db.logs()
 assert "mysqld: ready for connections" in db_log.decode()
 
 # check redirect to web installer
 curl = php.exec_run("curl -i http://localhost")
 print(curl.output.decode())
-# assert 'Location: http://localhost/index.php/installer' in curl.output.decode()
+assert 'Location: /setup/' in curl.output.decode()
 # @todo run magento unit test, first copy .env.dist to .env
-#php_conf = php.exec_run("bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist")
 
