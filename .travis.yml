@@ -10,7 +10,7 @@ before_install:
   # Docker.
   - sudo apt-get update
   - docker-compose --version
-  - pip install  --progress-bar off docker-compose --upgrade
+  - pip install docker-compose --upgrade
   - docker-compose --version
 
 install:
@@ -20,8 +20,8 @@ install:
   - docker-compose ps
 
 before_script:
-  - pip install requests --progress-bar off
-  - pip install docker  --progress-bar off
+  - pip install requests
+  - pip install docker
   - cd $TRAVIS_BUILD_DIR
 
 script:
