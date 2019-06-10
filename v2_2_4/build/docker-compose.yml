@@ -6,7 +6,7 @@ volumes:
 
 services:
   magento:
-    image: 'optimum/crm:magento-2.2.4-l'
+    image: 'trydirect/magento:2.2.4'
     build: ./apache
     ports:
       - '80:80'

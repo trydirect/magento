@@ -8,7 +8,7 @@ volumes:
 
 services:
   magento:
-    image: ${REGISTRY}optimum/crm:magento-2.2.4-l
+    image: ${REGISTRY}trydirect:magento:2.2.4
     container_name: magento
     env_file:
       .env
