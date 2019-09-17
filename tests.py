@@ -52,7 +52,7 @@ db = client.containers.get('magento_mariadb')
 assert db.status == 'running'
 cnf = db.exec_run("/usr/sbin/mysqld --verbose  --help")
 print(cnf.output.decode())
-assert 'mysqld  Ver 10.3.15-MariaDB' in cnf.output.decode()
+assert 'mysqld  Ver 10' in cnf.output.decode()
 db_log = db.logs()
 assert "mysqld: ready for connections" in db_log.decode()
 
