@@ -42,7 +42,7 @@ volumes:
 
 services:
   magento:
-    image: ${REGISTRY}trydirect:magento:2.3.0
+    image: ${REGISTRY}trydirect:magento:2.3.2
     container_name: magento
     env_file:
       .env

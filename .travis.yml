@@ -9,7 +9,7 @@ before_install:
 - pip install docker-compose --upgrade
 - docker-compose --version
 install:
-- cd v2_3_0
+- cd v2_3_2
 - docker-compose build
 - docker-compose up -d
 - docker-compose ps
@@ -24,10 +24,10 @@ notifications:
     rooms:
     - optimum-team:GycletOWK4Kt95GktwYwfUMp#build
 after_success:
-- cd v2_3_0
+- cd v2_3_2
 - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 - docker-compose -f docker-compose-build.yml images
-- docker push trydirect/magento:2.3.0
+- docker push trydirect/magento:2.3.2
 env:
   global:
   - secure: GtdbVulklByi5s4NrZMfV/0jnLxr5qKwF//sZQpM4BUwqClg+GKZP+dBWFTuOwctFXusqK9JSHr5cdTUpyTVqklFPnddFdtvaOgDAGD9Vq1LhEzfPi8Ba85moCiOGohcIs4zCrGOh88FME3ty6vwHmTnZ+4SvGP7cdFjj1eFbhb7Q8JiI7gIN2jPAE/0+98vOWx0fzxGqov6slcE4gqckpQ6k2vIcGt35zP1m9yFKiKFAprsfsExHuWa3qWUavLZEhZjEoQNaGfimyPM5iLGXIFkxysXzGVZsMM7E7uL9EzMn56XouyCnluYpmn0qAy3RAYXMgVkpUndR5hIPNYcCgZAhM6ubiSYWaoWTgy4pm7l2s9ZG1hlFHPhZEvSkyoSmHpj8VxpCXguMMXnCuJLBhIhQqhsQRP28Fj0S1Mpe1K8x2+9w1mzOGPwhlVmt3uTc9M4/TfpCwA2pwp0rXgY0uz3A7bR/2jM+nygMHDSBjXjGqYl/I+yLsS0qLCCmu8quPP7b8BpmJZly73+eW05OjrNOo4PA+X7rkjRKwhl1Ddbev3TAJzGgvacsuGd8zA37zmlZRCSsFTp3WX/1fzcqfQmX3roxCkADnQ8ccz0edjjeZ8No0h2Hpq85pcZ7JxFaqPD40rNDd9Zpe+kqXhiJs63gEvJ7/MLUAEVU328pK4=
