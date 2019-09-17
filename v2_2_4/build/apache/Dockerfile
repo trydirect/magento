@@ -1,6 +1,7 @@
 FROM php:7.1.28-fpm
 
-MAINTAINER "Magento"
+# Based on official Magento Dockerfile
+LABEL maintainer="info@optimum-web.com"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
 
@@ -28,9 +29,10 @@ RUN apt-get update && apt-get install -y \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean && apt-get update && apt-get install -y curl gnupg2 software-properties-common \
     && curl -sL https://deb.nodesource.com/setup_11.x | sudo bash - \
-    && apt-get update && apt-get install -y nodejs
+    && apt-get update && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN  npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
+RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
     && apt-get install -y apache2 \
     && a2enmod rewrite \
@@ -60,9 +62,7 @@ COPY config/php-fpm-magento2.conf /usr/local/etc/php-fpm.d/php-fpm-magento2.conf
 
 # apache config
 COPY config/apache-default.conf /etc/apache2/sites-enabled/apache-default.conf
-
 COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
-
 
 ENV PATH $PATH:/home/magento2/scripts/:/home/magento2/.magento-cloud/bin
 ENV PATH $PATH:/var/www/magento2/bin
@@ -71,13 +71,15 @@ ENV USE_SHARED_WEBROOT 1
 ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
+ENV MAGENTO_VERSION 2.2.4
 
-RUN wget -P /var/www https://github.com/magento/magento2/archive/2.2.4.tar.gz
-RUN tar xzvf /var/www/2.2.4.tar.gz -C /var/www/ \
-    && mv /var/www/magento2-2.2.4/* /var/www/magento2 \
+RUN wget -P /var/www https://github.com/magento/magento2/archive/${MAGENTO_VERSION}.tar.gz
+RUN tar xzvf /var/www/${MAGENTO_VERSION}.tar.gz -C /var/www/ \
+    && mv /var/www/magento2-${MAGENTO_VERSION}/* /var/www/magento2 \
     && ls -la /var/www/magento2
 
-RUN cd /var/www/magento2 && composer install
+WORKDIR /var/www/magento2
+RUN composer install
 # Initial scripts
 COPY scripts/ /home/magento2/scripts/
 RUN cd /home/magento2/scripts && composer install && chmod +x /home/magento2/scripts/m2init
@@ -96,13 +98,7 @@ RUN chown -hR magento2:magento2 /etc/apache2 && \
     getcap /usr/sbin/apache2 && \
     chown -hR magento2:magento2 /usr/local/var
 
-
-# Clean up
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 EXPOSE 80
 WORKDIR /home/magento2
-
 USER magento2
-
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

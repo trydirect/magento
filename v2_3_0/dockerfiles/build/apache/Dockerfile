@@ -90,7 +90,7 @@ RUN chown -hR magento2:magento2 /etc/apache2 && \
     chown -hR magento2:magento2 /usr/local/var
 
 EXPOSE 80
-WORKDIR /home/magento2
+WORKDIR /var/www/magento2
 USER magento2
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
