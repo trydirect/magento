@@ -1,6 +1,7 @@
 FROM php:7.2.15-fpm
 
-MAINTAINER "Magento"
+# Based on Magento Offical Dockerfile
+LABEL maintainer="info@optimum-web.com"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
 
