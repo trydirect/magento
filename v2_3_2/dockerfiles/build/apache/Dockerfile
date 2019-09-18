@@ -5,7 +5,7 @@ LABEL maintainer="info@optimum-web.com"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
 
-RUN apt-get update && apt-get install -y --no-install-recommends -qq \
+RUN apt-get update && apt-get install -y -qq \
     apt-utils \
     sudo \
     unzip \
@@ -28,12 +28,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends -qq \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean && apt-get update && apt-get install -y curl gnupg2 software-properties-common \
     && curl -sL https://deb.nodesource.com/setup_11.x | sudo bash - \
-    && apt-get update && apt-get install -y --no-install-recommends nodejs \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get update && apt-get install -y nodejs
 
 RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
-    && apt-get install -y --no-install-recommends apache2  \
+    && apt-get install -y apache2 \
     && a2enmod rewrite \
     && a2enmod proxy \
     && a2enmod proxy_fcgi \
