@@ -5,7 +5,7 @@ LABEL maintainer="info@optimum-web.com"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get -qq update && apt-get install -y -qq \
     apt-utils \
     sudo \
     unzip \
@@ -26,9 +26,15 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure hash --with-mhash \
     && docker-php-ext-install -j$(nproc) intl xsl gd zip pdo_mysql opcache soap bcmath json iconv \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && apt-get clean && apt-get update && apt-get install -y curl gnupg2 software-properties-common \
+    && apt-get clean && apt-get -qq update && apt-get install -y curl gnupg2 software-properties-common \
     && curl -sL https://deb.nodesource.com/setup_11.x | sudo bash - \
-    && apt-get update && apt-get install -y nodejs
+    && apt-get -qq update && apt-get install -y nodejs
+
+RUN curl https://packages.sury.org/php/apt.gpg -o /etc/apt/trusted.gpg.d/php.gpg \
+     && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
+     && rm -rf /var/lib/apt/lists/* && apt-get update \
+     && apt-get install --yes libsodium-dev \
+     && docker-php-ext-install sodium
 
 RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
@@ -47,7 +53,8 @@ RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && mkdir /home/magento2/state \
     && curl -sS https://accounts.magento.cloud/cli/installer -o /home/magento2/installer \
     && rm -r /usr/local/etc/php-fpm.d/* \
-    && sed -i 's/www-data/magento2/g' /etc/apache2/envvars
+    && sed -i 's/www-data/magento2/g' /etc/apache2/envvars \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY config/php.ini /usr/local/etc/php
 COPY config/supervisord.conf /etc/supervisord.conf
@@ -61,12 +68,12 @@ ENV USE_SHARED_WEBROOT 1
 ENV SHARED_CODE_PATH /var/www/magento2
 ENV WEBROOT_PATH /var/www/magento2
 ENV MAGENTO_ENABLE_SYNC_MARKER 0
+ENV VERSION=2.3.0
 
 WORKDIR /var/www
-RUN curl -LO https://github.com/magento/magento2/archive/2.3.0.tar.gz
-RUN tar xzf /var/www/2.3.0.tar.gz -C /var/www/ \
-    && mv /var/www/magento2-2.3.0/* /var/www/magento2 \
-    && ls -la /var/www/magento2
+RUN curl -LO https://github.com/magento/magento2/archive/${VERSION}.tar.gz
+RUN tar xzf /var/www/${VERSION}.tar.gz -C /var/www/ \
+    && mv /var/www/magento2-${VERSION}/* /var/www/magento2
 
 WORKDIR /var/www/magento2
 RUN composer install

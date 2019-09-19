@@ -13,7 +13,6 @@ RUN apt-get -qq update && apt-get install -y -qq \
     curl \
     libmcrypt-dev \
     libicu-dev \
-    libsodium-dev \
     libxml2-dev libxslt1-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
@@ -25,11 +24,17 @@ RUN apt-get -qq update && apt-get install -y -qq \
     expect \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure hash --with-mhash \
-    && docker-php-ext-install -j$(nproc) intl xsl gd zip pdo_mysql opcache soap bcmath json iconv sodium \
+    && docker-php-ext-install -j$(nproc) intl xsl gd zip pdo_mysql opcache soap bcmath json iconv \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean && apt-get -qq update && apt-get install -y curl gnupg2 software-properties-common \
     && curl -sL https://deb.nodesource.com/setup_11.x | sudo bash - \
     && apt-get -qq update && apt-get install -y nodejs
+
+RUN curl https://packages.sury.org/php/apt.gpg -o /etc/apt/trusted.gpg.d/php.gpg \
+     && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
+     && rm -rf /var/lib/apt/lists/* && apt-get update \
+     && apt-get install --yes libsodium-dev \
+     && docker-php-ext-install sodium
 
 RUN npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
