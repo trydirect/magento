@@ -87,7 +87,7 @@ services:
 
 ## Quick deployment to cloud
 ##### Amazon AWS, Digital Ocean, Hetzner and others
-[<img src="https://img.shields.io/badge/quick%20deploy|2.3.0-%40try.direct-brightgreen.svg">](https://dev.try.direct/server/user/deploy/Im1hZ2VudG8yMzB8NnwzIg.EAoFeA.aYjSEHLePotWcGkN0yBiKdUuNR0/)
+[<img src="https://img.shields.io/badge/quick%20deploy|2.3.0-%40try.direct-brightgreen.svg">](https://try.direct/server/user/deploy/Im1hZ2VudG8yMzB8NnwzIg.EAoFeA.aYjSEHLePotWcGkN0yBiKdUuNR0/)
 
 
 
